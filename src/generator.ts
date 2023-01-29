@@ -38,6 +38,11 @@ import * as path from 'path';
 
 import type { StateNode, EventObject } from 'xstate';
 
+export enum CodeTemplates{
+    full="c++17-full",
+    Arduino="arduino"
+}
+
 export interface CppStateMachineGeneratorProperties {
     /** Xsate Machine defined using Xstate API */
     xstateMachine: StateNode;
@@ -49,6 +54,8 @@ export interface CppStateMachineGeneratorProperties {
     pathForIncludes: string;
     /** Name of the script containing the model for better logging */
     tsScriptName?: string;
+    /** Template to be used for code generation. Defaults to CodeTemplates.full */
+    codeTemplate?: CodeTemplates;
 }
 
 const renderTemplate: (string, object) => string = (
@@ -84,10 +91,11 @@ export class Generator {
     }
 
     genCppFiles() {
+        const codeTemplate = this.properties.codeTemplate || CodeTemplates.full;
         for (const [template, outputFile] of [
-            [path.join(__dirname, 'templates', 'template_sm.hpp'), this.outputHeader],
-            [path.join(__dirname, 'templates', 'template_sm.cpp'), this.outputCppCode],
-            [path.join(__dirname, 'templates', 'template_test.cpp'), this.outputTest],
+            [path.join(__dirname, 'templates', codeTemplate, 'template_sm.hpp'), this.outputHeader],
+            [path.join(__dirname, 'templates', codeTemplate, 'template_sm.cpp'), this.outputCppCode],
+            [path.join(__dirname, 'templates', codeTemplate, 'template_test.cpp'), this.outputTest],
         ] as const) {
 
             const templateText = fs.readFileSync(template, 'utf8');
