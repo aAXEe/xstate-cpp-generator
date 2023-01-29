@@ -36,11 +36,11 @@ import * as templateEngine from 'squirrelly';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type { StateNode, EventObject } from 'xstate';
+import type { StateMachine, StateNode, EventObject } from 'xstate';
 
 export interface CppStateMachineGeneratorProperties {
     /** Xsate Machine defined using Xstate API */
-    xstateMachine: StateNode;
+    xstateMachine: StateMachine<any,any,any>;
     /** Destination path for generated C++ files. */
     destinationPath: string;
     /** Namespace for the generated C++ files */
@@ -64,7 +64,7 @@ const renderTemplate: (string, object) => string = (
 
 export class Generator {
     readonly properties: CppStateMachineGeneratorProperties;
-    machine: StateNode;
+    machine: StateMachine<any,any,any>;
     outputHeaderShortname: string;
     outputHeader: string;
     outputCppCode: string;
